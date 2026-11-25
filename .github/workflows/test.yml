@@ -1,0 +1,27 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Node helpers
+        run: |
+          node --check windows/codex-auth.probe.mjs
+          node --check windows/codex-auth.sessions.mjs
+      - name: Test account switching
+        shell: pwsh
+        run: powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\codex-auth.test.ps1
+
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check shell installer
+        run: bash -n install-wsl.sh
+      - name: Test shared profiles and sessions
+        run: python3 linux/codex-auth-linux.test.py
