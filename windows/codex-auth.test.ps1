@@ -47,7 +47,9 @@ try {
     Set-Content (Join-Path $fakeBin 'codex.cmd') '@echo off', 'echo HOME=%CODEX_HOME% ARGS=%*' -Encoding ASCII
     $env:PATH = "$fakeBin;$originalPath"
 
-    Invoke-Tool @('install-user', '--no-path') | Out-Null
+    $installer = Join-Path $testRoot 'install.ps1'
+    $installOutput = & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $installer -NoPath 2>&1 | Out-String
+    if ($LASTEXITCODE -ne 0) { throw "install.ps1 failed: $installOutput" }
     foreach ($name in @('codex-auth.ps1', 'codex-auth.cmd', 'codex-auth.probe.mjs', 'codex-auth.sessions.mjs')) {
         if (-not (Test-Path -LiteralPath (Join-Path (Join-Path $testHome 'bin') $name))) {
             throw "Installer did not copy $name."
