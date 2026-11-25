@@ -1,0 +1,13 @@
+# Codex credentials, sessions, and runtime state must never be published.
+auth.json
+auth-profiles/
+sessions/
+archived_sessions/
+logs/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.env
+.env.*
+__pycache__/
+*.pyc
